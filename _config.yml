@@ -7,12 +7,12 @@ title: ":: Haku's ::"
 subtitle: "生命中幻光 不可追逐"
 description: "生命中幻光，不可追逐"
 author: Haku
-language: en
+language: zh-Hans
 timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://yoursite.com
+url: http://b.kohaku.cc
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -80,3 +80,9 @@ deploy:
   type: git
   repo: https://github.com/VincentGau/VincentGau.github.io
   branch: master
+
+# sitemap
+baidusitemap:
+    path: baidusitemap.xml
+sitemap:
+    path: sitemap.xml
