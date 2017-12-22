@@ -1,7 +1,7 @@
 ---
 title: Python 弱引用
 date: 2017-05-23 09:35:34+08
-categories：
+categories:
 - Python
 tags:
 - Python
