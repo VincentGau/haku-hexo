@@ -1,7 +1,10 @@
 ---
 title: 不可辜负
 date: 2010-11-23 22:26:42+08
+categories:
+- Life
 tags:
+- Music
 ---
 《Hotel California》
 

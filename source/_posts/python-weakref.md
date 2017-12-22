@@ -1,7 +1,11 @@
 ---
 title: Python 弱引用
 date: 2017-05-23 09:35:34+08
+categories：
+- Python
 tags:
+- Python
+- Weakref
 ---
 Python 的 <code>[weakref](https://docs.python.org/2/library/weakref.html)</code> 模块实现对对象的弱引用（Weak References）。我们知道，Python 的垃圾回收机制基于引用计数器实现，实例创建后将由引用计数器管理，对实例的每一次引用都会使其引用计数器加1，引用的删除使引用计数器减1，如果引用计数器到达0实例将被销毁。但是有时候我们希望在内存需要的时候更早地销毁一个对象，比如发生循环引用时，或者在建立一个对象缓存时；弱引用不能保证对象不被销毁，当一个对象只存在弱引用时，它也会被销毁。
 

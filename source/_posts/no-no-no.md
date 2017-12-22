@@ -1,7 +1,10 @@
 ---
 title: No no no
 date: 2014-09-27 12:18:47+08
+categories:
+- Life
 tags:
+- 不知所云
 ---
 
 Don't anybody come

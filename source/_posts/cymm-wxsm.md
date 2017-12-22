@@ -2,7 +2,7 @@
 title: cymm wxsm
 date:  2009-07-24 01:07:48+08
 categories:
-- 杂
+- Life
 tags:
 - 年少荒唐
 ---
