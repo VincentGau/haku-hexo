@@ -1,6 +1,6 @@
 ---
 title: 老房子
-date: 2010-11-20 03:02:55+08
+date: 2010-11-20 03:02:55
 categories:
 - Life
 tags:

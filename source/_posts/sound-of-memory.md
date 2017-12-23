@@ -1,6 +1,6 @@
 ---
 title: 不可辜负
-date: 2010-11-23 22:26:42+08
+date: 2010-11-23 22:26:42
 categories:
 - Life
 tags:

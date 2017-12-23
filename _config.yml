@@ -5,7 +5,7 @@
 # Site
 title: ":: Haku's ::"
 subtitle: "生命中幻光 不可追逐"
-description: "生命中幻光，不可追逐"
+description: "生命中幻光 不可追逐"
 author: Haku
 language: zh-Hans
 timezone:
@@ -63,6 +63,7 @@ tag_map:
 ## http://momentjs.com/docs/#/displaying/format/
 date_format: YYYY-MM-DD
 time_format: HH:mm:ss
+datetime_format: YYYY-MM-DD HH:mm:ss
 
 # Pagination
 ## Set per_page to 0 to disable pagination

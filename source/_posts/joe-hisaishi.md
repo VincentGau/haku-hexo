@@ -1,6 +1,6 @@
 ---
 title: 久石让
-date: 2010-01-09 13:26:23+08
+date: 2010-01-09 13:26:23
 categories:
 - Life
 tags:

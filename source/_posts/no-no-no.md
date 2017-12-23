@@ -1,6 +1,6 @@
 ---
 title: No no no
-date: 2014-09-27 12:18:47+08
+date: 2014-09-27 12:18:47
 categories:
 - Life
 tags:

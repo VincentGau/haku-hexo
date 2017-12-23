@@ -1,6 +1,6 @@
 ---
 title: cymm wxsm
-date:  2009-07-24 01:07:48+08
+date:  2009-07-24 01:07:48
 categories:
 - Life
 tags:

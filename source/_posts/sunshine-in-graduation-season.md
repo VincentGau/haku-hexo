@@ -1,6 +1,6 @@
 ---
 title: 毕业季的阳光 
-date: 2012-05-31 14:36:01+08
+date: 2012-05-31 14:36:01
 categories:
 - Life
 tags:

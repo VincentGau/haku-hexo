@@ -1,6 +1,6 @@
 ---
 title: 狗 
-date:  2011-10-05 00:44:10+08
+date:  2011-10-05 00:44:10
 categories:
 - Life
 tags:

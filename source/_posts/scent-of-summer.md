@@ -1,6 +1,6 @@
 ---
 title: 夏天的味道
-date: 2009-04-13 17:16:34+08
+date: 2009-04-13 17:16:34
 categories:
 - Life
 tags:
