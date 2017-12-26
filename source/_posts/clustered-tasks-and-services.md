@@ -25,4 +25,4 @@ Register-ClusteredScheduledTask -TaskName MyTask -Cluster MyCluster -Xml $xmlFil
 ### Windows service集群化
 Windows Service 不能感知到整个集群，因此Windows Service集群化需要首先在各个节点上安装服务，然后再在故障转移集群管理器中添加服务。
 
-参考[Creating a Windows Cluster: Part 5 – Adding Applications and Services to the Cluster](https://www.1e.com/blogs/2014/11/17/creating-a-windows-cluster-part-5-adding-applications-and-services-to-the-cluster/)
+参考 [Creating a Windows Cluster: Part 5 – Adding Applications and Services to the Cluster](https://www.1e.com/blogs/2014/11/17/creating-a-windows-cluster-part-5-adding-applications-and-services-to-the-cluster/)
