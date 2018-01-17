@@ -1,5 +1,5 @@
 ---
-title: Django 
+title: Django 笔记
 tags:
   - django
   - python
