@@ -47,4 +47,5 @@ Django已经包含了ORM，因此只需要关注Model类，而不用关心SQL。
 # Middleware
 Django 里的Middleware 可以看成是一个hook，处于request/response 过程之间，是一个轻量级的、底层的插件系统，用于改变Django 的输入输出。
 
-一个middleware 是一个callable，它像view一样，接收一个request， 返回一个response。返回真正的view 之前可能经历数个中间件：在响应阶段，调用视图之前，Django按顺序从上到下应用MIDDLEWARE中定义的中间件。可以把这个结构看成一个洋葱，洋葱的中心是最后展示的view，它被一层层的中间件包裹起来，每一层都调用get_response把request 传递到下一层，直到view，然后response也会按原路返回直到最外层的中间件。
+一个middleware factory 是一个callable，它接收一个get_response
+ callable作为参数，返回一个middleware；一个middleware 是一个callable，它像view一样，接收一个request， 返回一个response。返回真正的view 之前可能经历数个中间件：在响应阶段，调用视图之前，Django按顺序从上到下应用MIDDLEWARE中定义的中间件。可以把这个结构看成一个洋葱，洋葱的中心是最后展示的view，它被一层层的中间件包裹起来，每一层都调用get_response把request 传递到下一层，直到view，然后response也会按原路返回直到最外层的中间件。 在request 和response 之间想要做的事情，都可以用middleware 来实现。
