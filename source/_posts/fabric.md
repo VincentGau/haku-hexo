@@ -1,12 +1,15 @@
 ---
-title: fabric-python命令行工具库
+title: 命令行工具库 fabric
 date: 2018-01-18 17:10:34
 tags:
 - python
+- 自动化部署
 ---
-fabric 是一个python库（支持python2.5 到2.7 版本），也是一个命令行工具，，它的一个重要的功能是**在不登录远程服务器的情况下，在本地执行远程shell命令，上传下载文件等等**，这个特性让我们可以通过fabric 来进行应用部署，以及执行一些系统运维自动化的任务。
+fabric 是一个python库（支持python2.5 到2.7 版本），也是一个命令行工具，，它的一个重要的功能是**在不登录远程服务器的情况下，在本地执行远程shell命令，上传下载文件等等**，这个特性让我们可以通过fabric 来进行应用部署，以及执行一些系统运维自动化的任务，而且是可以在多台服务器上执行。
 
 > It provides a basic suite of operations for executing local or remote shell commands (normally or via sudo) and uploading/downloading files, as well as auxiliary functionality such as prompting the running user for input, or aborting execution.
+
+<!-- more -->
 
 # 安装
 安装fabric：激活python2 虚拟环境，pip install fabric
