@@ -23,3 +23,17 @@ tags:
 - 在Mapping 标签页填上本地路径和远程主机发布路径。
 - 远程主机配置完成之后可以继续在Deployment 下的Options 选项中做一些个性化的配置，比如排除哪些文件，是否自动上传等。
 
+# TODO
+PyCharm 和其他jetBrain 的IDE 都有TODO 功能，迅速定位注释中出现TODO 关键字的位置，帮助我们快速回到上次工作遗留的地方。  
+
+{% asset_img todo.png %}
+
+TODO 窗口包含四个标签页，显示不同范围的TODO。 此外，TODO 功能还支持自定义模板。
+
+[More about TODO](https://www.jetbrains.com/help/pycharm/using-todo.html)
+
+
+
+
+
+[PyCharm 帮助文档](https://www.jetbrains.com/help/pycharm/meet-pycharm.html)
