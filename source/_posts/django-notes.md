@@ -90,13 +90,76 @@ Django 的单元测试使用Python的标准库unittest，通过class-based 的�
 
 ## 测试提速
 ### 测试并行
-如果测试用例相互独立，可以并行执行测试以提升效率。`test --parallel`
+如果测试用例相互独立，可以并行执行测试以提升效率。执行test 加上--parallel参数，比如`test --parallel=4`
 ### 保留测试数据库
 保留上一次运行测试创建的册数数据库，节省创建和销毁操作，大大减少运行测试的时间。`test --keepdb`
 ### 密码哈希
 默认的密码哈希算法相当耗时，如果需要在测试用例中大量认证用户，可以自定义hash 算法，在settings.py中设置PASSWORD_HASHERS；
 
 ## 测试工具
-### 用户登陆状态
+### 测试用户登陆状态
 调用force_login方法模拟用户已登陆状态，无须先创建用户再模拟登陆：
 `self.client.force_login(User.objects.get_or_create(username='testuser')[0])`
+
+### 测试静态文件
+调试和发布的时候常常会找不到静态文件，检查静态文件是否被正常serve
+```python
+from django.contrib.staticfiles import finders
+
+result = finders.find('css/base.css')
+```
+如果找到静态文件，find() 会返回文件的全路径，否则返回None；
+
+### 日志
+Django 使用Python 内置的logging 模块来实现系统日志；一个日志配置包含四个部分：Loggers, Handlers, Filters, Formatters；
+
+## 基本定义
+Logger 是日志系统的入口，每一个logger 都是一个named bucket，信息被写入logger 以作后续操作；**logger 有其日志级别**，每一条日志记录也有其级别，只有日志记录的级别高于等于logger 级别的时候，该日志记录才会继续后续的处理，否则会被忽略；当logger 决定一条信息需要被处理的时候，该信息被传递给一个Handler；
+
+Handler 是一个决定logger 中的每一条信息将如何被处理的引擎，它描述一个具体的日志行为，比如把信息输出到屏幕，文件或者socket； **handler 也有级别**，如果日志记录的级别低于handler 的级别，它会被忽略；一个logger 可以有多个handler， 每个handler 可以有不同的日志级别，这样可以根据信息的重要性来提供不同形式的通知，比如可以单独使用一个handler 处理CRITICAL 级别的日志记录，发送告警，同时用另一个handler 处理所有日志记录，写入文件以备后续分析；
+
+Filter 对日志从logger 传递到handler 提供更多的控制，默认情况下，任何符合级别要求的日志记录都会被处理，加上过滤器之后可以给日志处理增加额外的条件；Filter 还可以在日志记录被发出之前对它进行修改，比如写一个过滤器，在符合特定条件的情况下，把日志记录的级别从ERROR 降到WARNING；filter 可以被用在logger 或者handler 上，多个filters 可以通过链式实现过滤操作；一个比较常见的filter 是require_debug_false， 当DEBUG设置为False才处理日志记录；
+
+Formatter 描述具体的文本格式，将日志记录渲染成文本；
+
+处理流程如下：
+```python
+logger ---------> handlers ---------> formatter ---> files, emails .etc
+        filters             filters
+```
+
+## Django 的日志组件
+Django 提供了一些工具来处理Web 服务环境下的日志，包括内置的一些loggers, filters 和一个AdminEmailHandler；如果logging 配置字典中disable_existing_loggers 值设置成True, 默认配置中的所有logger 会被禁用（禁用不同于移除，这些logger 依然存在，但会丢弃所有给它的内容），为了避免预期之外的情况，最好将其设置成False，如果需要可重定义一些默认的logger；
+### AdminEmailHandler
+顺带提一句日志配置中的邮件设置，当DEGUG设置为False 的时候，如果在setting.py 中同时设置了ADMINS参数，Django 会在发生500错误的时候发送邮件给ADMINS 中的用户；默认情况下，Django 将从root@localhost 发送邮件，为了保证邮件正确接收，需要设置SERVER_EMAIL 参数为自己的发送邮箱地址；
+如果发现邮件发送失败，检查DEBUG是否设置成False，smtp服务器的用户名和密码是否正确，是否设置了SERVER_EMAIL参数；
+```python
+ADMINS = (
+    ('haku', 'g@kohaku.cc'),
+)
+
+MANAGERS = ADMINS
+
+# Email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = local_settings.EMAIL_HOST
+EMAIL_PORT = local_settings.EMAIL_PORT
+EMAIL_HOST_USER = local_settings.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = local_settings.EMAIL_HOST_PASSWORD
+DEFAULT_FROM_EMAIL = local_settings.DEFAULT_FROM_EMAIL
+SERVER_EMAIL = local_settings.DEFAULT_FROM_EMAIL
+```
+为了检测配置是否正确，在本地运行Python 内置的SMTP 测试服务器:
+`python -m smtpd -n -c DebuggingServer localhost:1025`
+
+然后在settings.py 设置：
+```python
+EMAIL_HOST='localhost'
+EMAIL_PORT=1025
+```
+触发一个500错误，或者生成一条error及以上级别的日志`logger.error('test')`，在终端上会显示发送的邮件内容；
+### 404 Error Reporting
+当DEBUG设置成False，并且在MIDDLEWARE设置中包含了django.middleware.common.BrokenLinkEmailsMiddleware，Django就会在抛出404异常并且该请求头**包含referer** 的时候给MANAGERS 列表中的用户发送邮件，这样做既能检测Broken Links，又能避免因为用户手动输入一个无效的地址而报错；
+
+
