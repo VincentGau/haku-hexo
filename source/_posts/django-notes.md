@@ -94,7 +94,12 @@ Django 的单元测试使用Python的标准库unittest，通过class-based 的�
 ### 保留测试数据库
 保留上一次运行测试创建的册数数据库，节省创建和销毁操作，大大减少运行测试的时间。`test --keepdb`
 ### 密码哈希
-默认的密码哈希算法相当耗时，如果需要在测试用例中大量认证用户，可以自定义hash 算法，在settings.py中设置PASSWORD_HASHERS；
+默认的密码哈希算法相当耗时，如果需要在测试用例中大量认证用户，可以自定义hash 算法，在settings.py中设置PASSWORD_HASHERS，指定特定的哈希算法，比如
+```python
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+]
+```
 
 ## 测试工具
 ### 测试用户登陆状态
