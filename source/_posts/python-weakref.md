@@ -42,7 +42,7 @@ print weakref.getweakrefcount(a)    # 0
 
 从上面的例子可以看到，对对象的弱引用使用单独的计数器；之所以第一次获取引用计数结果是 `2`而不是 `1`，是因为把 `a` 当参数传入了 `getrefcount()` 方法。
 
-总结，弱引用主要解决垃圾回收的问题，多用在处理对象缓存和循环引用问题上；回顾一下弱引用在 `django` 中使用的场景，`Signal` 类初始化的时候就定义了一个 `receiver` 缓存，在连接`receiver` 和信号的时候，默认对 `receiver` 使用弱引用；`weakref` 模块的方法和属性详见 [weakref](https://docs.python.org/2/library/weakref.html)
+总结，弱引用主要解决垃圾回收的问题，多用在处理对象缓存和循环引用问题上；回顾一下弱引用在 `django` 中的一个使用场景，`Signal` 类初始化的时候就定义了一个 `receiver` 缓存，在连接`receiver` 和信号的时候，默认对 `receiver` 使用弱引用；`weakref` 模块的方法和属性详见 [weakref](https://docs.python.org/2/library/weakref.html)
 
 
 相关文档：[https://pymotw.com/2/weakref/index.html](https://pymotw.com/2/weakref/index.html)
