@@ -8,7 +8,7 @@ tags:
 - decode
 ---
 # Python版本
-目前python有两个大版本，Python 2 和Python 3， 这两个版本互不兼容，除了语法上的差异，一些Python 2 的类库没有对应的Python 3 版本，在Python 3中无法使用，Python 3类库也可能不能用在Python 2 中。鉴于python 社区更关注Python 3 的特性和提升，Python 2 除了修复Bug已经不会有发展，并且越来越多的开发者企业逐渐放弃对Python 2 的支持，对于新项目Python 3 是一个更长远的选择。不过有虚拟环境的支持，使用不同版本的python也不是问题。
+目前python有两个大版本，Python 2 和Python 3， 这两个版本互不兼容，除了语法上的差异，一些Python 2 的类库没有对应的Python 3 版本，在Python 3中无法使用，Python 3类库也可能不能用在Python 2 中。鉴于python 社区更关注Python 3 的特性和提升，针对Python 2 的更新范围包括bug修复与安全更新，，并且越来越多的开发者企业逐渐放弃对Python 2 的支持，对于新项目Python 3 是一个更长远的选择。不过有虚拟环境的支持，使用不同版本的python也不是问题。
 安装python的时候默认的解释器是使用C语言开发的CPython，它编译python代码生成字节码然后执行，同样流行的还有JPython（Java），IronPython（.Net），PyPy（python）这些实现，其中CPython的使用更广泛。
 
 <!-- more -->
@@ -86,6 +86,7 @@ def to_bytes(bytes_or_str):
 ```
 还有容易产生混淆的地方是，Python 2里， 如果对象只包含ASCII码， 那么`str`和`unicode`看起来没什么区别，他们可以通过 + 运算符进行连接，也能进行比较，也能在格式化字符串`'%s''`中使用Unicode 对象，这意味着当形参需要是`str`时即使传入的参数是`unicode`（或者反之）程序也能执行；但是在Python 3 中，`bytes` 和`str`是完全不同的，即使是空串；
 
+Python 3里涉及file handles（使用`open`打开文件）的默认UTF-8编码，Python 2则默认二进制编码，因此
 
 # 切片
 切片是Python的一个重要特性，提供简洁的语法方便获取子集，不仅可用于`list` `str`等内建数据类型，还可扩展至所有实现了`__getitem__` `__setitem__`方法的类。序列类型，包括字符串，列表，元素等，支持解包，索引，切片， `all`， `any`等操作  
