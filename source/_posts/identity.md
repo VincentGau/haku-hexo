@@ -125,19 +125,20 @@ Windows Identity Framework（WIF）是一组.Net Framework 类库，实现身份
 
 ## 依赖方应用配置
 依赖方Web应用程序如需使用已有的自定义STS进行身份认证，需要给项目添加引用并修改配置文件：
-编辑配置文件web.config，使用基于声明的认证方式：
+需要添加的引用包括`System.IdentityModel` 和`System.IdentityModel.Services`；  
+需要编辑配置文件web.config，使用基于声明的认证方式：
 ```xml
 <system.webServer>
     <modules>
       <add name="WSFederationAuthenticationModule" type="System.IdentityModel.Services.WSFederationAuthenticationModule, System.IdentityModel.Services, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" preCondition="managedHandler" />
       <add name="SessionAuthenticationModule" type="System.IdentityModel.Services.SessionAuthenticationModule, System.IdentityModel.Services, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" preCondition="managedHandler" />
     </modules>
-  </system.webServer>
-```   
+</system.webServer>
+```
 
-配置地址与处理程序：
+配置URL地址与处理程序：
 ```xml
-  <system.identityModel>
+<system.identityModel>
     <identityConfiguration saveBootstrapContext="true">
       <issuerTokenResolver type="SimpleWebToken.CustomIssuerTokenResolver, SimpleWebToken">
         <AddAudienceKeyPair  symmetricKey="wAVkldQiFypTQ+kdNdGWCYCHRcee8XmXxOvgmak8vSY=" audience="http://localhost:19851/" />
@@ -150,23 +151,27 @@ Windows Identity Framework（WIF）是一组.Net Framework 类库，实现身份
         <add type="SimpleWebToken.SimpleWebTokenHandler, SimpleWebToken" />
       </securityTokenHandlers>
     </identityConfiguration>
-  </system.identityModel>
-  <system.identityModel.services>
-    <federationConfiguration identityConfigurationName="">
-      <serviceCertificate>
-        <certificateReference x509FindType="FindBySubjectName" findValue="localhost" storeLocation="LocalMachine" storeName="My"/>
-      </serviceCertificate>
-      <wsFederation passiveRedirectEnabled="true" issuer="http://localhost:62398/" realm ="http://localhost:19851/" requireHttps="false" />
-      <cookieHandler mode="Default" requireSsl="false">
-        <chunkedCookieHandler chunkSize="2000"/>
-      </cookieHandler>
-    </federationConfiguration>
-  </system.identityModel.services>
+</system.identityModel>
+```
+
+```xml
+<system.identityModel.services>
+<federationConfiguration identityConfigurationName="">
+  <serviceCertificate>
+    <certificateReference x509FindType="FindBySubjectName" findValue="localhost" storeLocation="LocalMachine" storeName="My"/>
+  </serviceCertificate>
+  <wsFederation passiveRedirectEnabled="true" issuer="http://localhost:62398/" realm ="http://localhost:19851/" requireHttps="false" />
+  <cookieHandler mode="Default" requireSsl="false">
+    <chunkedCookieHandler chunkSize="2000"/>
+  </cookieHandler>
+</federationConfiguration>
+</system.identityModel.services>
 ```
 上述配置中：
 `audienceUris` 标签指定依赖方应用的URL;
 `securityTokenHandlers` 标签指定处理token 的类和方法，可以使用自定义的方法或内建的方法；
 `issuerNameRegistry`标签指定token 处理程序使用的颁发者；
+配置完成后，访问依赖方应用不允许匿名访问的页面会跳转至STS进行登录操作。
 
 # 小结
 用户授权认证是大多数应用程序都需要经过的流程，目前各种框架种类众多，基于声明的模型中用户身份由一组声明表示，通过配置一个受信任的外部身份系统为我们自己的应用程序提供关于用户的所有必要信息，在这种模型下，单点登录也能较为简单的实现，应用程序本身不处理任何用户认证相关的逻辑，并且不需要保存用户账户和密码等数据，也不用主动查询用户的详细信息，只需从受信任的令牌发布程序接受安全令牌即可。一个新的应用依赖自定义的STS进行身份认证和授权只需要简单的配置，用户管理方便，安全性有保障，对于不适合使用我行现有的统一安全认证平台的单个或多个应用，ASP.NET 基于声明的模型是一个可选的方案。
