@@ -1,6 +1,8 @@
 ---
 title: 指缝
 date: 2018-9-22 11:07:07
+categories:
+- 随笔
 tags:
 - 随笔
 ---
