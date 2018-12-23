@@ -60,8 +60,8 @@ JSONP的使用有一定局限性，并有潜在安全风险：
 - 存在跨站请求伪造风险；
 - 在Chrome浏览器中可能会无法生效，
 
-### 服务端CORS
-Cross Origin Request Sharing(CORS) 是W3C标准，允许**服务器**端放松同源策略；通过CORS服务器可以显式地允许一些跨域请求。
+### CORS
+Cross Origin Request Sharing(CORS) 是W3C标准，允许**服务器**端放松同源策略；通过CORS服务器可以显式地允许一些跨域请求，在response header增加`Access-Control-Allow-Origin`等属性。CORS在服务器端设置，浏览器端不需要其他配置；
 以ASP.NET WebAPI为例，在服务端程序找那个启用CORS依赖`Microsoft.AspNet.WebApi.Cors`;在VS 中Ctrl + Q 快速启动搜索cors，在NuGet窗口中安装最新版本`Microsoft.AspNet.WebApi.Cors`；或者在Package Manager Console窗口通过执行命令：
 {% codeblock %}
 Install-Package Microsoft.AspNet.WebApi.Cors
@@ -113,7 +113,7 @@ namespace APIs
         }   
 }
 {% endcodeblock %}
-此时可在`http://localhost:8080`发出跨域资源请求并，可以在返回头中发现`Access-Control-Allow-Origin: http://localhost:8080` ，如下图所示：
+此时在`http://localhost:8080`发出跨域资源请求并，可以在返回头中发现`Access-Control-Allow-Origin: http://localhost:8080` ，如下图所示：
 {% asset_img response-header.png %}
 
 ### 请求转发
@@ -137,7 +137,7 @@ public class ForwardController {
 
 
 ## 小结
-相较于JSONP，CORS更灵活也更安全，应尽量使用CORS而避免JSONP。
+相较于JSONP只支持HTTP GET方法，CORS更灵活也更安全，应尽量选择使用CORS而避免JSONP。
 
 参考资料：
 [JSONP](https://en.wikipedia.org/wiki/JSONP)
