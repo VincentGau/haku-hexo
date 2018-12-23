@@ -14,13 +14,14 @@ date: 2018-12-22 19:16:53
 ## 何为同源
 只有协议，地址，端口均完全相同的URL才称为同源。
 以下两个URL同源：
-http://example.com/foo.html
-http://example.com/bar.html
+- `http://example.com/foo.html`
+- `http://example.com/bar.html`
 以下四个URL和上两个URL均不同源：
-http://example.net - Different domain
-http://example.com:9000/foo.html - Different port
-https://example.com/foo.html - Different scheme
-http://www.example.com/foo.html - Different subdomain
+- `http://example.net` - Different domain
+- `http://example.com:9000/foo.html` - Different port
+- `https://example.com/foo.html` - Different scheme
+- `http://www.example.com/foo.html` - Different subdomain
+
 {% blockquote %}
 注：IE在判断同源的时候不考虑端口差异；
 {% endblockquote %}
@@ -62,7 +63,7 @@ JSONP的使用有一定局限性，并有潜在安全风险：
 
 ### CORS
 Cross Origin Request Sharing(CORS) 是W3C标准，允许**服务器**端放松同源策略；通过CORS服务器可以显式地允许一些跨域请求，在response header增加`Access-Control-Allow-Origin`等属性。CORS在服务器端设置，浏览器端不需要其他配置；
-以ASP.NET WebAPI为例，在服务端程序找那个启用CORS依赖`Microsoft.AspNet.WebApi.Cors`;在VS 中Ctrl + Q 快速启动搜索cors，在NuGet窗口中安装最新版本`Microsoft.AspNet.WebApi.Cors`；或者在Package Manager Console窗口通过执行命令：
+以ASP.NET WebAPI为例，在服务端程序找那个启用CORS依赖`Microsoft.AspNet.WebApi.Cors`；在VS 中`Ctrl + Q` 快速启动搜索cors，在NuGet窗口中安装最新版本`Microsoft.AspNet.WebApi.Cors`；或者在Package Manager Console窗口通过执行命令：
 {% codeblock %}
 Install-Package Microsoft.AspNet.WebApi.Cors
 {% endcodeblock %}
@@ -113,12 +114,12 @@ namespace APIs
         }   
 }
 {% endcodeblock %}
-此时在`http://localhost:8080`发出跨域资源请求并，可以在返回头中发现`Access-Control-Allow-Origin: http://localhost:8080` ，如下图所示：
+此时在`http://localhost:8080`发出跨域资源请求即可，并可以在返回头中发现`Access-Control-Allow-Origin: http://localhost:8080` ，如下图所示：
 {% asset_img response-header.png %}
 
 ### 请求转发
-正如前文介绍，同源策略是浏览器安全策略，服务端与服务端的交互不受同源策略限制；
-在无法控制请求资源所在的远端服务器，不能设置返回头`Access-Control-Allow-Origin`的情况下，可以通过请求转发间接获取资源，即前端发送请求至同源的后端地址，由后端逻辑与目标服务器交互获取资源，将数据返回给浏览器端；
+正如前文介绍，同源策略是**浏览器**安全策略，服务端与服务端的交互不受同源策略限制；
+在无法控制请求资源所在的远端服务器，不能设置返回头`Access-Control-Allow-Origin`的情况下，可以通过请求转发间接获取资源，即在前端页面发送请求至同源的后端地址，由后端逻辑与目标服务器交互获取资源，再将数据返回给浏览器端；
 {% codeblock lang:java %}
 @RestController
 @RequestMapping(value = "/forward")
@@ -135,6 +136,17 @@ public class ForwardController {
 }
 {% endcodeblock %}
 
+此时在前端页面发送请求至同源的`http://localhost:8080/forward/getvalues/`，由`getValues()`方法在服务器之间获取数据；
+```javascript
+$.ajax({
+    type: "GET",
+    url: http://localhost:8080/forward/getvalues/,
+}).done(function (data) {
+    alert(data);
+}).error(function (jqXHR, textStatus, errorThrown) {
+    alert(jqXHR.responseText || textStatus);
+});
+```
 
 ## 小结
 相较于JSONP只支持HTTP GET方法，CORS更灵活也更安全，应尽量选择使用CORS而避免JSONP。
