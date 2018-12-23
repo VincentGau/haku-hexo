@@ -96,7 +96,7 @@ namespace APIs
     }
 }
 {% endcodeblock %}
-然后在Controller类或者方法上增加`[EnableCors]`属性：
+在Controller类或者方法上增加`[EnableCors]`属性：
 {% codeblock lang:CSharp %}
 using System.Web.Http;
 using System.Web.Http.Cors;
@@ -116,6 +116,36 @@ namespace APIs
 {% endcodeblock %}
 此时在`http://localhost:8080`发出跨域资源请求即可，并可以在返回头中发现`Access-Control-Allow-Origin: http://localhost:8080` ，如下图所示：
 {% asset_img response-header.png %}
+
+CORS 支持在Action级别，Controller级别以及全局级别设置；Action级别，Controller级别如上所示，如需在全局应用CORS策略，只需向`EnableCors`方法传递一个`EnableCorsAttribute`实例，如下：
+
+{% codeblock lang:CSharp %}
+using System.Web.Http;
+namespace APIs
+{
+    public class Startup
+    {
+        // This code configures Web API. The Startup class is specified as a type
+        // parameter in the WebApp.Start method.
+        public void Configuration(IAppBuilder appBuilder)
+        {
+            // Configure Web API for self-host. 
+            HttpConfiguration config = new HttpConfiguration();
+
+            var cors = new EnableCorsAttribute("www.example.com", "*", "*");
+            config.EnableCors();
+            
+            config.Routes.MapHttpRoute(
+                name: "DefaultApi",
+                routeTemplate: "api/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+            );
+
+            appBuilder.UseWebApi(config);
+        }
+    }
+}
+{% endcodeblock %}
 
 ### 请求转发
 正如前文介绍，同源策略是**浏览器**安全策略，服务端与服务端的交互不受同源策略限制；
