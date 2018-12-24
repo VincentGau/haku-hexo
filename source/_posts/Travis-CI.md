@@ -26,3 +26,10 @@ push代码到代码库之后脚本自动执行，在Travis可以看到执行日�
     - 在tests目录增加空的__init__.py 文件
 - 运行测试出错，提示找不到文件，FileNotFoundError: [Errno 2] No such file or directory: '../src/sites.json'
     - TODO
+
+{% blockquote %}
+注：TravisCI不支持MSTest，因为MSTest只能在Windows下运行，而目前Travis只在Linux 或者OSX上通过Mono或.Net Core runtime构建C#项目；
+{% endblockquote %}
+
+在README.md文件增加以下内容，显示构建徽章；
+`[![Build Status](https://www.travis-ci.org/VincentGau/pythonScripts.svg?branch=master)](https://www.travis-ci.org/VincentGau/pythonScripts)`
