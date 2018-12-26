@@ -44,17 +44,72 @@ $.ajax({
 {% asset_img cors-error-log.png %}
 提示请求被cors策略限制，被请求的资源没有提供`Access-Control-Allow-Origin`头。
 ### JSONP
-JSONP（JSON with padding）是一种通过注入`<script>`标签的方式请求数据的JavaScript模式，使得可以绕开同源策略限制共享数据。返回纯JSON数据的service由于同源策略的存在无法跨域共享数据，但是在`<script>`元素中可以执行从其他源获取的内容；于是可以在页面中增加一个src为所请求url的`<script>`元素，JSONP返回的数据不是JSON数据，而是一段script，以JSONP响应对象作为参数的回调函数，这就是为什么JSONP请求中会包含一个callback参数（有时是jsonp参数）；jQuery会自动去创建和插入script标签，只需要设置jsonp 作为dataType属性的值，即在ajax请求中增加一行`dataType:"jsonp",`:
-```javascript
-$.ajax({
-    type: "GET",
-    url: http://localhost:9000/api/values/,
-    dataType:"jsonp",
-}).done(function (data) {
-    alert(data);
-}).error(function (jqXHR, textStatus, errorThrown) {
-    alert(jqXHR.responseText || textStatus);
-});
+JSONP（JSON with padding）是一种通过注入`<script>`标签的方式请求数据的JavaScript模式，使得可以绕开同源策略限制共享数据，此处padding实际上是指一个回调函数。由于同源策略的存在返回纯JSON数据的service无法跨域共享数据，但是在`<script>`元素中可以执行从其他源获取的内容；于是可以在页面中增加一个src为所请求url的`<script>`元素，JSONP返回的数据不是JSON数据，而是一段script，以JSONP响应对象作为参数的回调函数，这就是为什么JSONP请求中会包含一个callback参数（参数名有时是jsonp）。举个例子
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JSONP</title>
+</head>
+<body>
+	<script type="text/javascript">
+		let my_callback = function(data){
+			console.log(data);
+		}
+
+		my_callback("Hello Haku.");
+	</script>
+</body>
+</html>
+```
+当我们用浏览器打开此页面，F12调出开发者工具可以在Console窗口看到`Hello Haku.`输出。
+当我们使用远程数据的时候，可以利用`<script>`标签，如下所示：
+```html
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JSONP</title>
+</head>
+<body>
+	<script type="text/javascript">
+		let my_callback = function(data){
+			console.log(data);
+		}
+	</script>
+
+	<script type="text/javascript" src="https://jsonplaceholder.typicode.com/posts?callback=my_callback"></script>
+</body>
+</html>
+```
+{% blockquote %}
+[JSONPlaceholder](https://jsonplaceholder.typicode.com/) 是一个提供假数据的RESTful API，测试需要使用到假数据的时候可以直接调用其接口；如`https://jsonplaceholder.typicode.com/posts`返回100条JSON格式数据；
+{% endblockquote %}
+当我们用浏览器打开此页面，F12调出开发者工具可以在Console窗口看到100条数据输出。
+我们可以不必手动创建`script`标签来获取数据，jQuery会自动创建和插入，只需要设置`jsonp` 作为`dataType`属性的值，即在ajax请求中增加一行`dataType:"jsonp",`:
+```html
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JSONP</title>
+</head>
+<body>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script type="text/javascript">
+		
+		$.ajax({
+		    type: "GET",
+		    url: "https://jsonplaceholder.typicode.com/posts",
+		    dataType:"jsonp",
+		}).done(function (data) {
+		    console.log(data);
+		}).error(function (jqXHR, textStatus, errorThrown) {
+		    console.log(jqXHR.responseText || textStatus);
+		});
+		
+	</script>
+</body>
+</html>
 ```
 JSONP的使用有一定局限性，并有潜在安全风险：
 - 只支持GET方法；
