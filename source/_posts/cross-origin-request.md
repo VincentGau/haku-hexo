@@ -9,7 +9,29 @@ date: 2018-12-22 19:16:53
 
 
 ## 介绍
-**浏览器**安全策略禁止页面向其他域发送Ajax 请求，即同源策略，以防止恶意站点读取其他站点的敏感信息；
+同源策略是**浏览器端**web应用安全的一个重要概念，在这个策略下，浏览器禁止页面中的脚本向其他域发送请求（如Ajax），以防止恶意站点读取其他站点的敏感信息；
+
+## 场景分析
+- 假设有一个Web API地址为`http://localhost:9000/api/values/`  
+该API返回一段简单的json数据，如下：
+{% asset_img api-response.png %}
+- 有一个Web页面地址为`http://localhost:8080`
+页面中仅包含一段JavaScript脚本，请求上述api并在控制台显示返回结果，如果出错则显示错误信息，script内容如下：
+```html
+<script type="text/javascript">
+    $.ajax({
+        type: "GET",
+        url: "http://localhost:9000/api/values/",
+    }).done(function (data) {
+        console.log(data);
+    }).error(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR.responseText || textStatus);
+    });
+</script>
+```
+当我们打开页面，发现在控制台出现如下错误：
+{% asset_img cors-error-log.png %}
+提示请求被cors策略限制，被请求的资源没有提供`Access-Control-Allow-Origin`头；出现此错误正是由于同源策略的存在。
 
 ## 何为同源
 只有协议，地址，端口均完全相同的URL才称为同源。
@@ -26,24 +48,58 @@ date: 2018-12-22 19:16:53
 注：IE在判断同源的时候不考虑端口差异；
 {% endblockquote %}
 
+`http://localhost:9000/api/values/` 与 `http://localhost:8080` 不同源，因此从8080端口请求得到的JavaScript脚本中无法向9000端口提供的API发送请求。
+
 ## 解决跨域请求的几种方法
-假设Web API地址为`http://localhost:9000/api/values/`,
-请求发出页面地址为`http://localhost:8080`
-如果直接在页面中发送ajax请求，如下
-```javascript
-$.ajax({
-    type: "GET",
-    url: http://localhost:9000/api/values/,
-}).done(function (data) {
-    alert(data);
-}).error(function (jqXHR, textStatus, errorThrown) {
-    alert(jqXHR.responseText || textStatus);
-});
-```
-由于同源策略的存在，会发现无法获取资源，并能在浏览器的控制台发现如下错误：
-{% asset_img cors-error-log.png %}
-提示请求被cors策略限制，被请求的资源没有提供`Access-Control-Allow-Origin`头。
 ### JSONP
+在介绍JSONP之前，首先明确一点，即html可以通过script标签从不同的域获取JavaScript脚本，体现为在一个html页面中，可以从abc.com引入script1.js，同时从xyz.com引入script2.js，如下：
+```html
+<script type="text/javascript" src="http://abc.com/jquery.min.js"></script>
+<script type="text/javascript" src="http://xyz.com/bootstrap.min.js"></script>
+```
+实际上，对于支持src属性的标签，都是可以从不同的域引入资源的，比如通过img标签从不同的域获取图片资源等。在此前提下，是否可以将json数据放在JavaScript脚本中被获取呢？考虑一个特定场景，假设html中仅包含一段JavaScript脚本，如下所示，脚本中定义了一个方法mycallback，并调用该方法：
+```html
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JSONP</title>
+</head>
+<body>
+	<script type="text/javascript">
+		let mycallback = function(data){
+			console.log(data);
+		};
+
+		mycallback("Hello Haku.");
+	</script>
+</body>
+</html>
+```
+显然，当我们的打开页面，会在控制台看到`Hello Haku.`的输出；
+我们把调用`mycallback`的脚本放到单独的data.js文件，如下：
+```html
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JSONP</title>
+</head>
+<body>
+	<script type="text/javascript">
+		let mycallback = function(data){
+			console.log(data);
+		}
+	</script>
+	<script type="text/javascript" src="data.js"></script>
+</body>
+</html>
+```
+data.js仅包含调用mycallback语句：
+```javascript
+mycallback([{"name": "haku"}, {"name": "chihiro"}])
+```
+当我们的刷新页面，会在控制台看到`[{"name": "haku"}, {"name": "chihiro"}]`的输出；
+
+
 JSONP（JSON with padding）是一种通过注入`<script>`标签的方式请求数据的JavaScript模式，使得可以绕开同源策略限制共享数据，此处padding实际上是指一个回调函数。由于同源策略的存在返回纯JSON数据的service无法跨域共享数据，但是在`<script>`元素中可以执行从其他源获取的内容；于是可以在页面中增加一个src为所请求url的`<script>`元素，JSONP返回的数据不是JSON数据，而是一段script，以JSONP响应对象作为参数的回调函数，这就是为什么JSONP请求中会包含一个callback参数（参数名有时是jsonp）。举个例子
 
 ```html
@@ -54,11 +110,11 @@ JSONP（JSON with padding）是一种通过注入`<script>`标签的方式请求
 </head>
 <body>
 	<script type="text/javascript">
-		let my_callback = function(data){
+		let mycallback = function(data){
 			console.log(data);
 		}
 
-		my_callback("Hello Haku.");
+		mycallback("Hello Haku.");
 	</script>
 </body>
 </html>
@@ -73,12 +129,12 @@ JSONP（JSON with padding）是一种通过注入`<script>`标签的方式请求
 </head>
 <body>
 	<script type="text/javascript">
-		let my_callback = function(data){
+		let mycallback = function(data){
 			console.log(data);
 		}
 	</script>
 
-	<script type="text/javascript" src="https://jsonplaceholder.typicode.com/posts?callback=my_callback"></script>
+	<script type="text/javascript" src="https://jsonplaceholder.typicode.com/posts?callback=mycallback"></script>
 </body>
 </html>
 ```
