@@ -29,7 +29,7 @@ date: 2018-12-22 19:16:53
     });
 </script>
 ```
-当我们打开页面，发现在控制台出现如下错误：
+当打开页面，发现在控制台出现如下错误：
 {% asset_img cors-error-log.png %}
 提示请求被cors策略限制，被请求的资源没有提供`Access-Control-Allow-Origin`头；出现此错误是由于同源策略的存在。
 
@@ -95,7 +95,7 @@ mycallback([{"name": "haku"}, {"name": "chihiro"}])
 ```
 当刷新页面，会在控制台看到`[{"name": "haku"}, {"name": "chihiro"}]`的输出；
 
-JSONP（JSON with padding）是一种通过注入`<script>`标签的方式请求数据的JavaScript模式，使得可以绕开同源策略限制共享数据，此处padding实际上是指一个回调函数（如上例中的mycallback）。由于同源策略的存在返回纯JSON数据的service无法跨域共享数据，但是在`<script>`元素中可以执行从其他源获取的内容；于是可以在页面中增加一个src为所请求url的`<script>`元素，JSONP返回的数据不是JSON数据，而是一段script，以JSONP响应对象作为参数的回调函数，这就是为什么JSONP请求中会包含一个callback参数。若需要服务端返回一段JavaScript脚本而不是json格式数据，需要修改服务端代码，以C#为例，为了方便可以直接引入第三方库`WebApiContrib.Formatting.Jsonp`，在api的配置函数中定义Fomatter，返回一段被回调函数包裹的脚本，代码如下
+JSONP（JSON with padding）是一种通过注入`<script>`标签的方式请求数据的JavaScript模式，使得可以绕开同源策的略限制共享数据，此处padding实际上是指一个回调函数（如上例中的mycallback）。由于同源策略的存在返回纯JSON数据的service无法跨域共享数据，但是在`<script>`元素中可以执行从其他源获取的内容；于是可以在页面中增加一个src为所请求url的`<script>`元素，JSONP返回的数据不是JSON数据，而是一段script，以JSONP响应对象作为参数的回调函数，这就是为什么JSONP请求中会包含一个callback参数。若需要服务端返回一段JavaScript脚本而不是json格式数据，需要修改服务端代码，以C#为例，为了方便可以直接引入第三方库`WebApiContrib.Formatting.Jsonp`，在api的配置函数中定义Fomatter，返回一段被回调函数包裹的脚本，代码如下
 ```asp
 var jsonpFormatter = new JsonpMediaTypeFormatter(config.Formatters.JsonFormatter);
 config.Formatters.Insert(0, jsonpFormatter); 
@@ -120,7 +120,7 @@ config.Formatters.Insert(0, jsonpFormatter);
 此时刷新页面，会在控制台看到`[{"name":"abc","value":"cba"},{"name":"xyz","value":"zyx"}]`的输出，并且可以发现返回头中显示的返回类型为JavaScript而不是json，返回的内容如下所示：
 {% asset_img response_js.png %}
 
-如果引入了JQuery，则不必手动创建`script`标签，jQuery会自动创建和插入，只需要在ajax请求找那个设置`jsonp` 作为`dataType`属性的值，将前端页面调整为如下所示，即我们常见的jsonp使用方法：
+如果引入了JQuery，则不必手动创建`script`标签，jQuery会自动创建和插入，只需要在ajax请求中将`dataType`属性设置为`jsonp` ，将前端页面调整为如下所示，即我们常见的jsonp使用方法：
 ```html
 <!DOCTYPE html>
 <html>
@@ -144,10 +144,6 @@ config.Formatters.Insert(0, jsonpFormatter);
 ```
 此时刷新页面，会在控制台看到`[{"name":"abc","value":"cba"},{"name":"xyz","value":"zyx"}]`的输出。
 
-JSONP的使用有一定局限性，并有潜在安全风险：
-- 只支持GET方法；
-- 存在跨站请求伪造风险；
-- 在Chrome浏览器中可能会无法生效，
 
 ### CORS
 Cross Origin Request Sharing(CORS) 是W3C标准，允许**服务器**端放松同源策略；通过CORS服务器可以显式地允许一些跨域请求，体现为在response header增加`Access-Control-Allow-Origin`等属性。CORS在服务器端设置，浏览器端不需要其他修改。
