@@ -26,7 +26,7 @@ categories:
 `http://tc.hakucc.com/api/shefu?clue=月明人倚楼 云7`
 
 # 自动回复
-由于QQBot所依赖的SmartQQ协议停用，最后选择酷Q作为自动回复的工具。酷Q使用教程[点此](酷Q SDK-X)，配置完成后，编写`CQPlusHandler.py`如下：
+由于QQBot所依赖的SmartQQ协议停用，最后选择酷Q作为自动回复的工具。酷Q使用教程[点此](https://gitee.com/muxiaofei/coolq_sdk_x/wikis/pages)，配置完成后，编写`CQPlusHandler.py`如下：
 
 ```python
 # -*- coding:utf-8 -*-
@@ -63,7 +63,9 @@ class MainHandler(cqplus.CQPlusHandler):
             return ''
 ```
 
-完成后无需执行`CQPlusHandler.py`，在酷Q中启用该应用即可。
+在酷Q中启用该应用即可。
+
+> 并不直接执行`CQPlusHandler.py`，将该文件放到酷q`app\{appid}`目录下，在酷q中启用应用即可；
 
 参考
 [酷Q SDK-X](https://gitee.com/muxiaofei/coolq_sdk_x/wikis/pages)
