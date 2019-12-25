@@ -23,7 +23,7 @@ date: 2018-12-22 19:16:53
 - `http://www.example.com/foo.html` - Different subdomain
 
 {% blockquote %}
-注：IE在判断同源的时候不考虑端口差异；
+注：IE在判断同源的时候不考虑端口差异； 
 {% endblockquote %}
 
 ## 解决跨域请求的几种方法
